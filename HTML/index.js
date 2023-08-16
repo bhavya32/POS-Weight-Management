@@ -12,3 +12,13 @@ ws.onmessage = function (evt) {
     document.getElementById("weight").innerHTML = w + " Kgs"
  };
 
+
+ function freq(){
+    var dt = prompt("Enter DT", "500");
+    ws.send("dt:" + dt);
+ }
+
+function calibrate() {
+    var cf = prompt("Enter CF", "13000");
+    ws.send("cf:" + cf);
+}

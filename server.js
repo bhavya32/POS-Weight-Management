@@ -1,16 +1,20 @@
 var express = require('express');
 var currdata = ""
 var app = express();
+
+var updateArduino = function(){}
+
 var expressWs = require('express-ws')(app);
+
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/HTML/index.html')
 })
+
 app.use(express.static('HTML'))
 app.ws('/connect', function(ws, req) {
     ws.on('message', function(msg) {
-      console.log("received: " + msg)
+        updateArduino(msg)
     });
-
   });
   
 
@@ -31,4 +35,9 @@ function listen(zero, cf,dt){
     });
 }
 
+function passUpdate(fn){
+    updateArduino = fn
+}
+
 exports.updateWS = update
+exports.passUpdate = passUpdate

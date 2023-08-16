@@ -1,7 +1,7 @@
 # POS-Weight-Management
  Smart weighing system for small businesses. 
 
-## Communication standard
+## Communication standard (Arduino)
 
 ```w:000.00;cf:00000;dt:1000```
 
