@@ -1,21 +1,35 @@
 const bindings = require("@serialport/bindings");
 const { SerialPort, ReadlineParser } = require('serialport')
 const escpos = require('escpos');
+
 escpos.USB = require('escpos-usb');
 var http = require('http')
 printerExists = false
 var printers = escpos.USB.findPrinter()
+var printer;
+var usbDevice;
+
+var itemName = "NA";
+const readline = require("readline");
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+rl.on('line', (input) => {
+  itemName=input;
+});
+
 if (printers.length == 0) {
   console.log("No printer found")
 }
 else {
   
   if(process.platform == "win32") {
-    const usbDevice = new escpos.USB(printers[0]["idVendor"], printers[0]["idProduct"]);
+    usbDevice = new escpos.USB(printers[0]["idVendor"], printers[0]["idProduct"]);
   } else{
-    const usbDevice = new escpos.USB(printers[0]["deviceDescriptor"]["idVendor"],printers[0]["deviceDescriptor"]["idProduct"]);
+    usbDevice = new escpos.USB(printers[0]["deviceDescriptor"]["idVendor"],printers[0]["deviceDescriptor"]["idProduct"]);
   }
-  const printer = new escpos.Printer(usbDevice);
+  printer = new escpos.Printer(usbDevice);
   printerExists = true
 }
 
@@ -62,7 +76,7 @@ async function main(){
 async function handleArduinoData(data){
   data = data.trim()
   if (!data.includes("Kg")) return 
-  w=data.split(" ")[4].slice(0,-1)
+  w=data.split(" ")[5].slice(0,-1)
   postWeight(w)
     if (printLocked == false) {
         printLocked = true
@@ -107,7 +121,8 @@ async function print(d){
     .size(0,0)
     .text(gt() + "               " +gd())
     .text(config.ID)
-    .feed(1)
+    .text(itemName)
+	.feed(1)
     .size(2, 2)
     .align('ct')
     //.style('b')
